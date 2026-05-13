@@ -1,6 +1,7 @@
 import pickle as pickle
+import os
 # import analysis data
-data_path = ''
+data_path = os.path.join(os.path.dirname(__file__), '..', 'data') + '/'
 
 
 # N = 11 subject data
@@ -33,7 +34,6 @@ trial_num_base = Gs_base.shape[1]
 
 
 # load interface parameters (initial interfaces)
-import os
 exp_path = os.path.join(os.path.dirname(__file__), '..') + '/'
 with open(exp_path + 'protocols/global_search_interfaces_2norm_cost.pkl', 'rb') as file:
     # global_search_interfaces = [G_star0, G_star1, G_star2, zero_order_Gs, first_order_Gs, second_order_Gs]
