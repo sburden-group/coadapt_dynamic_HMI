@@ -1,8 +1,9 @@
 import pickle as pickle
 import os
 # import analysis data
-data_path = os.path.join(os.path.dirname(__file__), '..', 'data') + '/'
+# data_path = os.path.join(os.path.dirname(__file__), '..', 'data') + '/'
 
+data_path = r'/Users/amberchou/Library/CloudStorage/OneDrive-UW(2)/HIL data/data_pickle/'  # for Amber's mac, from the OneDrive folder, change this for your computer
 
 # N = 11 subject data
 with open(data_path +'HCPS097_107_data.pkl', 'rb') as file:
