@@ -93,21 +93,20 @@ pip install scipy
 ```
 
 ### Analysis environment
-
-The analysis notebooks can use a more recent Python (3.8+).  Install additionally:
-
+The analysis notebooks can use a more recent Python (3.8+). Install the required packages using
 ```bash
-pip install pandas seaborn jupyter
+pip install -r requirements.txt
+pip install ipykernel
 ```
 
 ---
 
 ## 4. Running the Experiment
 
-Navigate to the repository root and launch the experiment from IPython:
+First find the serial port for slider. Navigate to the repository and launch the experiment from IPython:
 
 ```bash
-cd /path/to/dynamic_HMI
+cd /path/to/this_repo
 ipython
 ```
 
