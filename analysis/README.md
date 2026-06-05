@@ -104,11 +104,12 @@ Produces boxplots (initial vs. final co-adapted vs. fixed baseline) for:
 
 | File | Contents |
 |---|---|
-| `HCPS097_107_data.pkl` | All experimental data for 11 subjects (G_parameters, Gs, Hs, Ds, UHs, UGs, Ys, ds, uhs, ugs, ys, errors + baseline equivalents) |
+| `HCPS097_107_data.pkl` | All experimental data for 11 subjects (G_parameters, Gs, Hs, Ds, UHs, UGs, Ys, ds, uhs, ugs, ys, errors + baseline equivalents), NOTE: this file is too large so it's only saved in OneDrive folder, if running locally using Dev Container, download this pickle from OneDrive and put it in the data_pickels folder.| 
 | `pilot_subjects_passthrough.pkl` | Pass-through (I=1) baseline data for 6 pilot subjects; used in `parameter_search.ipynb` |
 | `human_model_fit_data.pkl` | Fitted 1st- and 2nd-order human model parameters and frequency responses |
 | `simulation_results.pkl` | Best co-adaptation simulation (lambda = 2.04, 5.5, 1.32) |
 | `simulated_results_sweep_penalty.pkl` | Penalty sweep results (3 × 50 simulate_alt calls) |
+| `global_search_interfaces_2norm_cost.pkl` | Interface parameters and baseline interfaces used in the experiment |
 
 
 
