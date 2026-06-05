@@ -12,6 +12,15 @@ from globalVars import *
 from scipy import signal
 from scipy.interpolate import interp1d
 
+def _to_float1d(arr):
+    """Convert a signal array (possibly object dtype with mixed scalars/shape-1 arrays) to float64 1-D.
+    The game saves dis_ as an object array where alternating elements are Python floats and
+    single-element numpy arrays; this unwraps both uniformly."""
+    arr = np.asarray(arr)
+    if arr.dtype != object:
+        return arr.ravel().astype(float)
+    return np.array([float(np.asarray(x).ravel()[0]) for x in arr.ravel()])
+
 # find npz files for each trial
 def findFilename(PATH, subject):
     fis = glob.glob(PATH+'/data/'+subject+'/*.npz')
@@ -56,9 +65,9 @@ def getrawdata(PATH,subject):
 
     timedomainvalues[listofIDs[0]]['times'] = np.hstack(times_)[-N:] # take out first 5 sec
     timedomainvalues[listofIDs[0]]['refs'] = np.hstack(refs_)[-N:]
-    timedomainvalues[listofIDs[0]]['outs'] = np.hstack(outs_)[-N:]
-    timedomainvalues[listofIDs[0]]['inps'] = np.hstack(inps_)[-N:]
-    timedomainvalues[listofIDs[0]]['dists'] = np.hstack(dists_)[-N:]
+    timedomainvalues[listofIDs[0]]['outs'] = _to_float1d(trials[listofIDs[0]]['out_'])[-N:]
+    timedomainvalues[listofIDs[0]]['inps'] = _to_float1d(trials[listofIDs[0]]['inp_'])[-N:]
+    timedomainvalues[listofIDs[0]]['dists'] = _to_float1d(trials[listofIDs[0]]['dis_'])[-N:]
 
     for id in listofIDs[1:]:
         times_ = [trials[id]['time_']]
@@ -69,9 +78,9 @@ def getrawdata(PATH,subject):
         timedomainvalues[id] = {}
         timedomainvalues[id]['times'] = (np.hstack(times_)[-N:]) # take out first 5 sec
         timedomainvalues[id]['refs']=(np.hstack(refs_)[-N:])
-        timedomainvalues[id]['outs']=(np.hstack(outs_)[-N:])
-        timedomainvalues[id]['inps']=(np.hstack(inps_)[-N:])
-        timedomainvalues[id]['dists']=(np.hstack(dists_)[-N:])
+        timedomainvalues[id]['outs'] = _to_float1d(trials[id]['out_'])[-N:]
+        timedomainvalues[id]['inps'] = _to_float1d(trials[id]['inp_'])[-N:]
+        timedomainvalues[id]['dists'] = _to_float1d(trials[id]['dis_'])[-N:]
         if 'H_' in trials[id].keys():
             H_ = [trials[id]['H_']]
             G_ = [trials[id]['G_']]
@@ -109,13 +118,13 @@ def get_data(PATH,trial_name):
 
     for key in keys:
         for i,trial in time_so[key].items():
-            outs = trial['outs'][-N:] # cursor output 
+            outs = trial['outs'][-N:] # cursor output (float64 from getrawdata)
             inps = trial['inps'][-N:]
             dists = trial['dists'][-N:] # output disturbance
             OUTS = np.fft.fft(outs)/N
             DISTS = np.fft.fft(dists)/N
             INPS = np.fft.fft(inps)/N
-            G = trial['G_']
+            G = np.atleast_1d(trial['G_']).ravel()
             H_acc = trial['H_'] # accumulated H
 
             # find G at 8 stimulated frequencies
@@ -123,8 +132,8 @@ def get_data(PATH,trial_name):
                 G_ = second(G)
             elif len(G) == 3: #1st order
                 G_ = first(G)
-            else: #0th order
-                G_ = zero(G)
+            else: #0th order — G is a scalar gain; zero() expects a scalar, not an array
+                G_ = zero(float(G[0]))
             # calculate H from exp data
             Tud = DISTS[IX]/INPS[IX] # actually Tdu, but match the name in actual experiment
             # H = -1/(Tud+G_*soM) 
@@ -134,7 +143,7 @@ def get_data(PATH,trial_name):
             UG = INPS * interpolate(G_) #UI = UH * I 
             ug = np.real(np.fft.ifft(UG,axis=0)*N) # time domain (2400,)
 
-            G_parameters.append(G) # freq domain
+            G_parameters.append(G) # freq domain (G is already atleast_1d from above)
             Gs.append(G_) # number of parameters
             Hs.append(H)  # freq domain
             Haccs.append(H_acc) # freq domain

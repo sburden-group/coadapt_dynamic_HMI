@@ -15,7 +15,6 @@ from matplotlib import rc
 import sys
 from scipy.optimize import curve_fit
 import seaborn as sns
-# sys.path.append('C:\\Users\\amber\\Documents\\GitHub\\hil-game-analysis\\analysis') # change this for your computer
 # from supportFile2 import findFFT,plotThingsEO,findFilename,geterr #Momona's code for even and odd trials
 # from collect_data import findFilename, getrawdata, get_data, analyze
 fmts = ['svg','pdf']

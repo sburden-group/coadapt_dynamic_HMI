@@ -1,27 +1,19 @@
-# Use an official Python 3.8 runtime as a parent image
-FROM python:3.8-slim
+# Step 1: Use the official Python 3.11.15 base image
+FROM python:3.11.15-slim
 
-# Set the working directory in the container
-WORKDIR /app
+# Step 2: Set the working directory inside the container
+WORKDIR /workspace
 
-# Install system dependencies (needed for some python packages)
+# Step 3: Install system dependencies (needed for some python packages like 'control')
 RUN apt-get update && apt-get install -y \
     build-essential \
-    python3-dev \
-    python3-distutils \
-    gfortran \
-    libopenblas-dev \
-    liblapack-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the requirements file into the container
+# Step 4: Copy the requirements file into the container
 COPY requirements.txt .
 
-# Install the specified packages
+# Step 5: Install the python packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# This allows VS Code to communicate with the container
+# Step 6: Expose the port for Jupyter (optional, but good practice)
 EXPOSE 8888
-
-# Keep the container running
-CMD ["sleep", "infinity"]
